@@ -4,9 +4,10 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthInterceptor(private val oAuthApi: OAuthApi) : Interceptor {
-
-    private val sessionManager = SessionManager() // Replace with your session management class
+class AuthInterceptor(
+    private val oAuthApi: OAuthApi,
+    private val sessionManager: SessionManager
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()

@@ -1,19 +1,21 @@
 package com.softbinator.network
 
 import androidx.datastore.preferences.core.edit
-import com.softbinator.AUTH_TOKEN_PREFERENCE
-import com.softbinator.EXPIRES_IN_PREFERENCE
+import com.softbinator.presentation.AUTH_TOKEN_PREFERENCE
+import com.softbinator.presentation.EXPIRES_IN_PREFERENCE
 import com.softbinator.SoftbinatorApplication
-import com.softbinator.dataStore
+import com.softbinator.presentation.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SessionManager {
+@Singleton
+class SessionManager @Inject constructor() {
 
     val accessToken: String? by lazy {
         val context = SoftbinatorApplication.instance.applicationContext
