@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Softbinator</string>
+    <string name="back_button">Back</string>
+    <string name="animals_details">Animal Details</string>
 </resources>

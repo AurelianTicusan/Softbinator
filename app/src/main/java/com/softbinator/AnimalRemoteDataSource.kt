@@ -1,9 +1,10 @@
 package com.softbinator
 
 import com.softbinator.network.PetFinderApi
+import javax.inject.Inject
 
-class AnimalRemoteDataSource(private val petFinderApi: PetFinderApi) {
+class AnimalRemoteDataSource @Inject constructor(private val petFinderApi: PetFinderApi) {
 
-    suspend fun getAnimals(page: Int) = petFinderApi.getAnimals()
+    suspend fun getAnimals(page: Int) = petFinderApi.getAnimals(page)
 
 }

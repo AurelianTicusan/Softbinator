@@ -4,8 +4,8 @@ coilVersion = "2.4.0"
 converterGsonVersion = "2.9.0"
 datastorePreferences = "1.0.0"
 gson = "2.10.1"
-hiltVersion = "2.44"
-kotlin = "1.9.0"
+hiltVersion = "2.48"
+kotlin = "1.9.10"
 coreKtx = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -20,11 +20,14 @@ retrofit = "2.9.0"
 rxandroidVersion = "3.0.2"
 rxjavaVersion = "3.1.5"
 rxkotlin = "3.0.0"
+navigationRuntimeKtx = "2.7.7"
+navigationCompose = "2.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferences" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingCompose" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }
@@ -52,9 +55,12 @@ retrofit2-adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3",
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjavaVersion" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroidVersion" }
 rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinSerializationPlugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 
