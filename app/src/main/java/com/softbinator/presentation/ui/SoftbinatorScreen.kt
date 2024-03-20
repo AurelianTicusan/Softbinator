@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.softbinator.presentation.ui
 
@@ -19,11 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.softbinator.R
+import com.softbinator.presentation.AnimalDetailsViewModel
 import com.softbinator.presentation.HomeViewModel
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_ID
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_NAME
@@ -42,6 +45,11 @@ object Navigation {
         data object AnimalDetails : Route(1, "$ANIMAL_DETAILS_ROUTE/{$ANIMAL_ID}/{$ANIMAL_NAME}") {
             fun createRoute(animalId: Int, animalName: String) =
                 "AnimalDetails/$animalId/$animalName"
+
+            fun createArgumentTypes() = listOf(
+                navArgument(ANIMAL_ID) { type = NavType.IntType },
+                navArgument(ANIMAL_NAME) { type = NavType.StringType },
+            )
         }
 
         companion object {
@@ -85,20 +93,18 @@ fun SoftbinatorAppBar(
 
 @Composable
 fun SoftbinatorApp(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
+    animalDetailsViewModel: AnimalDetailsViewModel,
     navController: NavHostController = rememberNavController()
 ) {
-    // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
+
     val currentRoute = backStackEntry?.destination?.route
     val screenOrdinal = Navigation.Route.findOrdinalByRoute(currentRoute)
     val screenName = when (screenOrdinal) {
         Navigation.Route.Start.ordinal -> Navigation.Route.Start.route
-        Navigation.Route.AnimalDetails.ordinal -> backStackEntry?.arguments?.run {
-            getString(
-                ANIMAL_ID
-            )
-        } ?: "Details"
+        Navigation.Route.AnimalDetails.ordinal ->
+            backStackEntry?.arguments?.run { getString(ANIMAL_NAME) } ?: "Details"
 
         else -> ""
     }
@@ -119,20 +125,20 @@ fun SoftbinatorApp(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable(route = Navigation.Route.Start.route) {
-                MainScreen(homeViewModel = viewModel) {
+            composable(
+                route = Navigation.Route.Start.route
+            ) {
+                MainScreen(homeViewModel = homeViewModel) {
                     val route = Navigation.Route.AnimalDetails.createRoute(it.id, it.name)
                     navController.navigate(route)
                 }
             }
-            composable(route = Navigation.Route.AnimalDetails.route) {
-                val animalId = backStackEntry?.arguments?.run {
-                    getInt(ANIMAL_ID)
-                } ?: -1
-                val animalName = backStackEntry?.arguments?.run {
-                    getString(ANIMAL_NAME)
-                } ?: ""
-                AnimalsDetailsScreen(animalName = "$animalId - $animalName")
+            composable(
+                route = Navigation.Route.AnimalDetails.route,
+                arguments = Navigation.Route.AnimalDetails.createArgumentTypes()
+            ) {
+                val animalId = backStackEntry?.arguments?.run { getInt(ANIMAL_ID) } ?: -1
+                AnimalsDetailsScreen(animalDetailsViewModel = animalDetailsViewModel, id = animalId)
             }
         }
     }
