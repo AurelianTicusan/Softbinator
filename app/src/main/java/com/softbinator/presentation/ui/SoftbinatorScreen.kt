@@ -2,7 +2,6 @@
 
 package com.softbinator.presentation.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,21 +25,47 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.softbinator.R
 import com.softbinator.presentation.HomeViewModel
+import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_ID
+import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_NAME
 
-enum class SoftbinatorScreen(@StringRes val title: Int) {
-    Start(title = R.string.app_name),
-    AnimalDetails(title = R.string.animals_details),
+object Navigation {
+    object Args {
+        const val ANIMAL_ID = "animal_id"
+        const val ANIMAL_NAME = "animal_name"
+    }
+
+    const val START_ROUTE = "Home"
+    const val ANIMAL_DETAILS_ROUTE = "AnimalDetails"
+
+    sealed class Route(val ordinal: Int, val route: String) {
+        data object Start : Route(0, START_ROUTE)
+        data object AnimalDetails : Route(1, "$ANIMAL_DETAILS_ROUTE/{$ANIMAL_ID}/{$ANIMAL_NAME}") {
+            fun createRoute(animalId: Int, animalName: String) =
+                "AnimalDetails/$animalId/$animalName"
+        }
+
+        companion object {
+            fun findOrdinalByRoute(route: String?): Int {
+                return when {
+                    route.isNullOrEmpty() -> 0
+                    route.startsWith(START_ROUTE) -> 0
+                    route.startsWith(ANIMAL_DETAILS_ROUTE) -> 1
+                    else -> 0
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun SoftbinatorAppBar(
-    currentScreen: SoftbinatorScreen,
+    currentScreenName: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(currentScreenName) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -65,15 +90,23 @@ fun SoftbinatorApp(
 ) {
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
-    val currentScreen = SoftbinatorScreen.valueOf(
-        backStackEntry?.destination?.route ?: SoftbinatorScreen.Start.name
-    )
+    val currentRoute = backStackEntry?.destination?.route
+    val screenOrdinal = Navigation.Route.findOrdinalByRoute(currentRoute)
+    val screenName = when (screenOrdinal) {
+        Navigation.Route.Start.ordinal -> Navigation.Route.Start.route
+        Navigation.Route.AnimalDetails.ordinal -> backStackEntry?.arguments?.run {
+            getString(
+                ANIMAL_ID
+            )
+        } ?: "Details"
+
+        else -> ""
+    }
 
     Scaffold(
         topBar = {
             SoftbinatorAppBar(
-                currentScreen = currentScreen,
+                currentScreenName = screenName,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
@@ -81,24 +114,25 @@ fun SoftbinatorApp(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = SoftbinatorScreen.Start.name,
+            startDestination = Navigation.Route.Start.route,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable(route = SoftbinatorScreen.Start.name) {
+            composable(route = Navigation.Route.Start.route) {
                 MainScreen(homeViewModel = viewModel) {
-                    backStackEntry?.arguments?.apply {
-                        putString("animal_name", it.name)
-                    }
-                    navController.navigate(SoftbinatorScreen.AnimalDetails.name)
+                    val route = Navigation.Route.AnimalDetails.createRoute(it.id, it.name)
+                    navController.navigate(route)
                 }
             }
-            composable(route = SoftbinatorScreen.AnimalDetails.name) {
+            composable(route = Navigation.Route.AnimalDetails.route) {
+                val animalId = backStackEntry?.arguments?.run {
+                    getInt(ANIMAL_ID)
+                } ?: -1
                 val animalName = backStackEntry?.arguments?.run {
-                    getString("animal_name")
-                } ?: "Unknown"
-                AnimalsDetailsScreen(animalName = animalName)
+                    getString(ANIMAL_NAME)
+                } ?: ""
+                AnimalsDetailsScreen(animalName = "$animalId - $animalName")
             }
         }
     }
