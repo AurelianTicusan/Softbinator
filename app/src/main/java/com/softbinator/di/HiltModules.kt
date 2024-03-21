@@ -3,10 +3,10 @@ package com.softbinator.di
 import com.softbinator.data.AnimalRepository
 import com.softbinator.domain.framework.AnimalRepositoryImpl
 import com.softbinator.BASE_URL
-import com.softbinator.network.AuthInterceptor
-import com.softbinator.network.OAuthApi
-import com.softbinator.network.PetFinderApi
-import com.softbinator.network.SessionManager
+import com.softbinator.data.network.AuthInterceptor
+import com.softbinator.data.network.OAuthApi
+import com.softbinator.data.network.PetFinderApi
+import com.softbinator.data.network.SessionManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

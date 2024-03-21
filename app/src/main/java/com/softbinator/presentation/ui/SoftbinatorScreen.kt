@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -26,8 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.softbinator.R
-import com.softbinator.presentation.AnimalDetailsViewModel
-import com.softbinator.presentation.HomeViewModel
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_ID
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_NAME
 
@@ -73,7 +72,13 @@ fun SoftbinatorAppBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(currentScreenName) },
+        title = {
+            Text(
+                text = currentScreenName,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -93,8 +98,6 @@ fun SoftbinatorAppBar(
 
 @Composable
 fun SoftbinatorApp(
-    homeViewModel: HomeViewModel,
-    animalDetailsViewModel: AnimalDetailsViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -128,7 +131,7 @@ fun SoftbinatorApp(
             composable(
                 route = Navigation.Route.Start.route
             ) {
-                MainScreen(homeViewModel = homeViewModel) {
+                MainScreen() {
                     val route = Navigation.Route.AnimalDetails.createRoute(it.id, it.name)
                     navController.navigate(route)
                 }
@@ -138,7 +141,8 @@ fun SoftbinatorApp(
                 arguments = Navigation.Route.AnimalDetails.createArgumentTypes()
             ) {
                 val animalId = backStackEntry?.arguments?.run { getInt(ANIMAL_ID) } ?: -1
-                AnimalsDetailsScreen(animalDetailsViewModel = animalDetailsViewModel, id = animalId)
+                val animalName = backStackEntry?.arguments?.run { getString(ANIMAL_NAME) } ?: ""
+                AnimalsDetailsScreen(id = animalId, animalName = animalName)
             }
         }
     }

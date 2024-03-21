@@ -1,9 +1,9 @@
-package com.softbinator.network
+package com.softbinator.data.network
 
 import com.softbinator.CLIENT_ID
 import com.softbinator.CLIENT_SECRET
 import com.softbinator.GRANT_TYPE
-import com.softbinator.network.data.OAuthResponse
+import com.softbinator.data.network.response.OAuthResponse
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

@@ -2,4 +2,11 @@
     <string name="app_name">Softbinator</string>
     <string name="back_button">Back</string>
     <string name="animals_details">Animal Details</string>
+    <string name="animal_details_name_label">Name</string>
+    <string name="animal_details_species_label">Species</string>
+    <string name="animal_details_gender_label">Gender</string>
+    <string name="animal_details_breed_label">Breed</string>
+    <string name="animal_details_age_label">Age</string>
+    <string name="animal_details_status_label">Status</string>
+    <string name="details_screen_error_message">There was an error retrieving information about %1s (%1d)\n%1s\nPlease reload the page.</string>
 </resources>

@@ -37,27 +37,28 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.softbinator.R
-import com.softbinator.network.data.Animal
-import com.softbinator.network.data.Photo
 import com.softbinator.presentation.HomeViewModel
+import com.softbinator.presentation.state.AnimalItem
+import com.softbinator.presentation.state.PhotoItem
 import com.softbinator.presentation.ui.theme.AdoptableColor
 
 
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel,
-    onAnimalClicked: (animal: Animal) -> Unit
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onAnimalClicked: (animal: AnimalItem) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val moviePagingItems: LazyPagingItems<Animal> =
+        val moviePagingItems: LazyPagingItems<AnimalItem> =
             homeViewModel.animalsState.collectAsLazyPagingItems()
         LazyColumn(
             modifier = Modifier
@@ -128,8 +129,8 @@ fun ErrorMessage(modifier: Modifier, message: String, onClickRetry: () -> Unit) 
 
 @Composable
 fun AnimalTile(
-    animal: Animal,
-    onAnimalClicked: (animal: Animal) -> Unit
+    animal: AnimalItem,
+    onAnimalClicked: (animal: AnimalItem) -> Unit
 ) {
 
     Row(
@@ -144,8 +145,6 @@ fun AnimalTile(
             .clickable { onAnimalClicked(animal) }
     ) {
         val url = animal.photos.firstOrNull()?.small
-        Log.d("ababa", "animal: $animal")
-        Log.d("ababa", "url: $url")
 
         Image(
             painter = rememberAsyncImagePainter(
@@ -206,18 +205,26 @@ fun AnimalTile(
 @Preview
 @Composable
 private fun AnimalTilePreview() {
-    val animal = Animal().apply {
-        photos = arrayListOf(Photo().apply {
-            small =
-                "https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/71098959/4/?bust=1710934497&width=100"
-        })
-        name = "Pandy"
-        status = "adoptable"
-        gender = "Female"
-        species = "Red Panda"
-        age = "Adult"
+    val animal = AnimalItem(
+        id = -1,
+        photos = arrayListOf(
+            PhotoItem(
+                small =
+                "https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/71098959/4/?bust=1710934497&width=100",
+                medium = null,
+                large = null,
+                full = null
+            )
+        ),
+        name = "Pandy",
+        status = "adoptable",
+        gender = "Female",
+        species = "Red Panda",
+        age = "Adult",
+        description = null,
+        breeds = null,
         publishedAt = "2024-03-20T11:35:21+0000"
-    }
+    )
     AnimalTile(animal = animal) {
 
     }

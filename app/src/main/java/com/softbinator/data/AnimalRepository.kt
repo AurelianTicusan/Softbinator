@@ -1,7 +1,7 @@
 package com.softbinator.data
 
 import androidx.paging.PagingData
-import com.softbinator.network.data.Animal
+import com.softbinator.domain.model.Animal
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 

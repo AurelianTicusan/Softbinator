@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.softbinator.domain.usecase.GetAnimalsUseCase
-import com.softbinator.network.data.Animal
+import com.softbinator.presentation.mapper.toAnimalItem
+import com.softbinator.presentation.state.AnimalItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,9 +19,9 @@ class HomeViewModel @Inject constructor(
     private val getAnimalsUseCase: GetAnimalsUseCase
 ) : ViewModel() {
 
-    private val _animalsState: MutableStateFlow<PagingData<Animal>> =
+    private val _animalsState: MutableStateFlow<PagingData<AnimalItem>> =
         MutableStateFlow(value = PagingData.empty())
-    val animalsState: MutableStateFlow<PagingData<Animal>> get() = _animalsState
+    val animalsState: MutableStateFlow<PagingData<AnimalItem>> get() = _animalsState
 
     init {
         onEvent(HomeEvent.GetHome)
@@ -39,7 +41,7 @@ class HomeViewModel @Inject constructor(
         getAnimalsUseCase.execute()
             .distinctUntilChanged()
             .cachedIn(viewModelScope)
-            .collect { _animalsState.value = it }
+            .collect { _animalsState.value = it.map { item -> item.toAnimalItem() } }
     }
 }
 

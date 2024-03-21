@@ -1,4 +1,4 @@
-package com.softbinator.network.data
+package com.softbinator.data.network.response
 
 import com.google.gson.annotations.SerializedName
 

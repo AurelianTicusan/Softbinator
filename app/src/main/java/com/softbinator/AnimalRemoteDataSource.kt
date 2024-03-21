@@ -1,6 +1,6 @@
 package com.softbinator
 
-import com.softbinator.network.PetFinderApi
+import com.softbinator.data.network.PetFinderApi
 import javax.inject.Inject
 
 class AnimalRemoteDataSource @Inject constructor(private val petFinderApi: PetFinderApi) {

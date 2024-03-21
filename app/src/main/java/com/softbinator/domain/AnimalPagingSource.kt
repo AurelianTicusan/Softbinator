@@ -1,8 +1,10 @@
-package com.softbinator
+package com.softbinator.domain
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.softbinator.network.data.Animal
+import com.softbinator.AnimalRemoteDataSource
+import com.softbinator.data.mapper.toAnimal
+import com.softbinator.domain.model.Animal
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -17,7 +19,7 @@ class AnimalPagingSource(
                 page = currentPage
             )
             LoadResult.Page(
-                data = animals.animals,
+                data = animals.animals.map { it.toAnimal() },
                 prevKey = if (currentPage == 1) null else currentPage - 1,
                 nextKey = if (animals.animals.isEmpty()) null else currentPage + 1
             )

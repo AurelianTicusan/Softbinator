@@ -1,4 +1,4 @@
-package com.softbinator.network
+package com.softbinator.data.network
 
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor

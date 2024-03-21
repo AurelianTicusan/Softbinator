@@ -1,9 +1,8 @@
-package com.softbinator.network
+package com.softbinator.data.network
 
-import com.softbinator.network.data.AnimalResponse
-import com.softbinator.network.data.AnimalsResponse
+import com.softbinator.data.network.response.AnimalResponse
+import com.softbinator.data.network.response.AnimalsResponse
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

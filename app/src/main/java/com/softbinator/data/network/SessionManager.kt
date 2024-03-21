@@ -1,4 +1,4 @@
-package com.softbinator.network
+package com.softbinator.data.network
 
 import androidx.datastore.preferences.core.edit
 import com.softbinator.presentation.AUTH_TOKEN_PREFERENCE
