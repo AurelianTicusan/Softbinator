@@ -1,4 +1,4 @@
-package com.softbinator.domain.framework
+package com.softbinator.data.framework
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.softbinator.domain.AnimalPagingSource
 import com.softbinator.AnimalRemoteDataSource
 import com.softbinator.MAX_PAGE_SIZE
-import com.softbinator.data.AnimalRepository
+import com.softbinator.domain.repository.AnimalRepository
 import com.softbinator.data.mapper.toAnimal
 import com.softbinator.domain.model.Animal
 import io.reactivex.rxjava3.core.Single

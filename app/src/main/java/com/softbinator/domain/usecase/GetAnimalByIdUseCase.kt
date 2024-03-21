@@ -1,7 +1,7 @@
 package com.softbinator.domain.usecase
 
-import com.softbinator.data.AnimalRepository
 import com.softbinator.domain.model.Animal
+import com.softbinator.domain.repository.AnimalRepository
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 

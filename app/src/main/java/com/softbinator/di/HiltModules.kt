@@ -1,16 +1,18 @@
 package com.softbinator.di
 
-import com.softbinator.data.AnimalRepository
-import com.softbinator.domain.framework.AnimalRepositoryImpl
+import android.content.Context
 import com.softbinator.BASE_URL
-import com.softbinator.data.network.AuthInterceptor
+import com.softbinator.data.framework.AnimalRepositoryImpl
 import com.softbinator.data.network.OAuthApi
 import com.softbinator.data.network.PetFinderApi
 import com.softbinator.data.network.SessionManager
+import com.softbinator.data.network.TokenAuthenticator
+import com.softbinator.domain.repository.AnimalRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -36,14 +38,14 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesPetFinderApi(authInterceptor: AuthInterceptor): PetFinderApi {
+    fun providesPetFinderApi(tokenAuthenticator: TokenAuthenticator): PetFinderApi {
         val interceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
         val client = OkHttpClient.Builder()
+            .authenticator(tokenAuthenticator)
             .addInterceptor(interceptor)
-            .addInterceptor(authInterceptor)
             .build()
 
         val retrofit: Retrofit = Retrofit.Builder()
@@ -57,11 +59,19 @@ class AppModule {
     }
 
     @Provides
-    fun providesAuthInterceptor(
+    fun providesTokenAuthenticator(
         oAuthApi: OAuthApi,
         sessionManager: SessionManager
-    ): AuthInterceptor {
-        return AuthInterceptor(oAuthApi, sessionManager);
+    ): TokenAuthenticator {
+        return TokenAuthenticator(oAuthApi, sessionManager)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSessionManager(
+        @ApplicationContext appContext: Context
+    ): SessionManager {
+        return SessionManager(appContext)
     }
 
 }

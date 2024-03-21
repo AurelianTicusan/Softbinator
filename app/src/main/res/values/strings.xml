@@ -13,4 +13,6 @@
     <string name="retry_label">Retry</string>
     <string name="refresh_label">Refresh</string>
     <string name="home_screen_no_items_label">There are no items available. Please try to refresh the page.</string>
+    <string name="animal_tile_status_label">Status: </string>
+    <string name="animal_tile_age_label">Age: %1$s</string>
 </resources>

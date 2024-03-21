@@ -49,6 +49,7 @@ import com.softbinator.R
 import com.softbinator.presentation.HomeViewModel
 import com.softbinator.presentation.state.AnimalItem
 import com.softbinator.presentation.state.PhotoItem
+import com.softbinator.presentation.toReadableDate
 import com.softbinator.presentation.ui.theme.AdoptableColor
 
 
@@ -112,11 +113,8 @@ fun MainScreen(
                     }
 
                     loadState.append is LoadState.Error -> {
-                        val error = moviePagingItems.loadState.append as LoadState.Error
                         item {
-                            ErrorMessageAppend(
-                                message = error.error.localizedMessage ?: "Unknown Error"
-                            ) { retry() }
+                            ErrorMessageAppend { retry() }
                         }
                     }
 
@@ -193,7 +191,7 @@ fun ErrorMessageRefresh(message: String, onClickRetry: () -> Unit) {
 }
 
 @Composable
-fun ErrorMessageAppend(message: String, onClickRetry: () -> Unit) {
+fun ErrorMessageAppend(onClickRetry: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -264,7 +262,7 @@ fun AnimalTile(
             )
 
             val annotatedString = buildAnnotatedString {
-                append("Status: ")
+                append(stringResource(R.string.animal_tile_status_label))
                 withStyle(style = SpanStyle(AdoptableColor)) {
                     append(animal.status)
                 }
@@ -276,12 +274,12 @@ fun AnimalTile(
             )
 
             Text(
-                text = "Age: ${animal.age}",
+                text = stringResource(R.string.animal_tile_age_label, animal.age),
                 modifier = Modifier
             )
 
             Text(
-                text = animal.publishedAt.substring(0, 10),
+                text = toReadableDate(animal.publishedAt),
                 modifier = Modifier
             )
         }

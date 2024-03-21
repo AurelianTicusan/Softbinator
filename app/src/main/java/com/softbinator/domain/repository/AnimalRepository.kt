@@ -1,4 +1,4 @@
-package com.softbinator.data
+package com.softbinator.domain.repository
 
 import androidx.paging.PagingData
 import com.softbinator.domain.model.Animal

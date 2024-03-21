@@ -1,8 +1,8 @@
 package com.softbinator.domain.usecase
 
 import androidx.paging.PagingData
-import com.softbinator.data.AnimalRepository
 import com.softbinator.domain.model.Animal
+import com.softbinator.domain.repository.AnimalRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
