@@ -2,7 +2,6 @@ package com.softbinator.presentation.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,17 +61,18 @@ fun AnimalsDetailsScreen(
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
-        Image(
+        FloatingActionButton(
             modifier = Modifier
                 .padding(15.dp)
                 .size(35.dp)
-                .align(Alignment.TopEnd)
-                .clickable {
-                    isErrorTriggered = isErrorTriggered.not()
-                },
-            painter = painterResource(id = if (isErrorTriggered) R.drawable.ic_error_pressed else R.drawable.ic_error_none),
-            contentDescription = null
-        )
+                .align(Alignment.TopEnd),
+            onClick = { isErrorTriggered = isErrorTriggered.not() }
+        ) {
+            Image(
+                painter = painterResource(id = if (isErrorTriggered) R.drawable.ic_error_pressed else R.drawable.ic_error_none),
+                contentDescription = null
+            )
+        }
         when (val uiState = animalDetailsViewModel.animalsState.collectAsState().value) {
             is UiState.Loading -> AnimalDetailsScreenLoading()
 

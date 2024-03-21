@@ -1,6 +1,5 @@
 package com.softbinator.presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,9 +27,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +41,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -51,7 +54,7 @@ import com.softbinator.presentation.ui.theme.AdoptableColor
 
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel,
     onAnimalClicked: (animal: AnimalItem) -> Unit
 ) {
     Surface(
@@ -60,6 +63,8 @@ fun MainScreen(
     ) {
         val moviePagingItems: LazyPagingItems<AnimalItem> =
             homeViewModel.animalsState.collectAsLazyPagingItems()
+        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,11 +82,11 @@ fun MainScreen(
                     )
                 }
             }
+
             moviePagingItems.apply {
                 when {
                     loadState.refresh is LoadState.Loading -> {
                         item {
-                            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
                             Box(
                                 modifier = Modifier
                                     .height(screenHeight)
@@ -94,10 +99,9 @@ fun MainScreen(
                     loadState.refresh is LoadState.Error -> {
                         val error = moviePagingItems.loadState.refresh as LoadState.Error
                         item {
-                            ErrorMessage(
-                                modifier = Modifier.fillParentMaxSize(),
-                                message = error.error.localizedMessage ?: "Unknown Error",
-                                onClickRetry = { retry() })
+                            ErrorMessageRefresh(
+                                message = error.error.localizedMessage ?: "Unknown Error"
+                            ) { retry() }
                         }
                     }
 
@@ -110,10 +114,19 @@ fun MainScreen(
                     loadState.append is LoadState.Error -> {
                         val error = moviePagingItems.loadState.append as LoadState.Error
                         item {
-                            ErrorMessage(
-                                modifier = Modifier,
-                                message = error.error.localizedMessage ?: "Unknown Error",
-                                onClickRetry = { retry() })
+                            ErrorMessageAppend(
+                                message = error.error.localizedMessage ?: "Unknown Error"
+                            ) { retry() }
+                        }
+                    }
+
+                    loadState.refresh is LoadState.NotLoading -> {
+                        if (itemCount == 0) {
+                            item {
+                                Box(modifier = Modifier.height(screenHeight)) {
+                                    NoItemsHomeScreen { moviePagingItems.refresh() }
+                                }
+                            }
                         }
                     }
                 }
@@ -123,8 +136,81 @@ fun MainScreen(
 }
 
 @Composable
-fun ErrorMessage(modifier: Modifier, message: String, onClickRetry: () -> Unit) {
+fun NoItemsHomeScreen(onClickRefresh: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.ic_empty_items),
+            contentDescription = null
+        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.home_screen_no_items_label),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+            Button(onClick = onClickRefresh) {
+                Text(text = stringResource(R.string.refresh_label))
+            }
+        }
+    }
+}
 
+@Composable
+fun ErrorMessageRefresh(message: String, onClickRetry: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.ic_error),
+            contentDescription = null
+        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                color = Color.Red,
+                text = stringResource(R.string.error_retrieving_animals, message),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+            Button(onClick = onClickRetry) {
+                Text(text = stringResource(R.string.retry_label))
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorMessageAppend(message: String, onClickRetry: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_error), contentDescription = null,
+            colorFilter = ColorFilter.tint(Color.Red)
+        )
+        Spacer(modifier = Modifier.width(12.5.dp))
+        Button(onClick = onClickRetry) {
+            Text(
+                text = stringResource(R.string.retry_label),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
 
 @Composable

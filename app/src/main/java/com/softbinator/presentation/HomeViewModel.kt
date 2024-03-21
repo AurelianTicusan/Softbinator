@@ -24,16 +24,8 @@ class HomeViewModel @Inject constructor(
     val animalsState: MutableStateFlow<PagingData<AnimalItem>> get() = _animalsState
 
     init {
-        onEvent(HomeEvent.GetHome)
-    }
-
-    fun onEvent(event: HomeEvent) {
         viewModelScope.launch {
-            when (event) {
-                is HomeEvent.GetHome -> {
-                    getAnimals()
-                }
-            }
+            getAnimals()
         }
     }
 
@@ -43,8 +35,4 @@ class HomeViewModel @Inject constructor(
             .cachedIn(viewModelScope)
             .collect { _animalsState.value = it.map { item -> item.toAnimalItem() } }
     }
-}
-
-sealed class HomeEvent {
-    data object GetHome : HomeEvent()
 }
