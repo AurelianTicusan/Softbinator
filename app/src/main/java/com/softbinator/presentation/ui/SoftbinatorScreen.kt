@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -26,8 +27,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.softbinator.R
 import com.softbinator.presentation.HomeViewModel
+import com.softbinator.presentation.state.AnimalItem
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_ID
 import com.softbinator.presentation.ui.Navigation.Args.ANIMAL_NAME
 
@@ -99,7 +103,6 @@ fun SoftbinatorAppBar(
 
 @Composable
 fun SoftbinatorApp(
-    homeViewModel: HomeViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -123,6 +126,9 @@ fun SoftbinatorApp(
             )
         }
     ) { innerPadding ->
+        val homeViewModel: HomeViewModel = hiltViewModel()
+        val moviePagingItems: LazyPagingItems<AnimalItem> =
+            homeViewModel.animalsState.collectAsLazyPagingItems()
         NavHost(
             navController = navController,
             startDestination = Navigation.Route.Start.route,
@@ -133,7 +139,7 @@ fun SoftbinatorApp(
             composable(
                 route = Navigation.Route.Start.route
             ) {
-                MainScreen(homeViewModel) {
+                MainScreen(moviePagingItems) {
                     val route = Navigation.Route.AnimalDetails.createRoute(it.id, it.name)
                     navController.navigate(route)
                 }

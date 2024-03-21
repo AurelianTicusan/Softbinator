@@ -43,10 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.softbinator.R
-import com.softbinator.presentation.HomeViewModel
 import com.softbinator.presentation.state.AnimalItem
 import com.softbinator.presentation.state.PhotoItem
 import com.softbinator.presentation.toReadableDate
@@ -55,15 +53,14 @@ import com.softbinator.presentation.ui.theme.AdoptableColor
 
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel,
+    moviePagingItems: LazyPagingItems<AnimalItem>,
     onAnimalClicked: (animal: AnimalItem) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val moviePagingItems: LazyPagingItems<AnimalItem> =
-            homeViewModel.animalsState.collectAsLazyPagingItems()
+
         val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
         LazyColumn(
